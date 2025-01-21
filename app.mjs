@@ -1,14 +1,13 @@
 import { readFile } from "fs/promises";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { createServer } from "https";
+import { createSecureServer } from "http2";
 import { on } from "events";
 import mime from "mime-types";
 
 const port = 3000;
-// サーバーの作成
 const reqs = on(
-	createServer({
+	createSecureServer({
 		key: readFileSync("./cert.key"),
 		cert: readFileSync("./cert.crt"),
 	}).listen(port),

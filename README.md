@@ -1,15 +1,15 @@
 https://speakerdeck.com/recruitengineers/browser-9b5a2b70-4b6a-4108-a1f5-0876a3ceb8d0?slide=192
 これをやってみた記録
 
-# httpsに変更
+# https に変更
 
 ## 証明書の発行
 
 https://chatgpt.com/share/678e59cc-1fe8-8013-a6e4-4f762228cbdf
 
-ローカルCA（認証局）を作成。CA証明書(.crt)とCA秘密鍵(.pem)が作られる
+ローカル CA（認証局）を作成。CA 証明書(.crt)と CA 秘密鍵(.pem)が作られる
 
-このCAが保証する証明書を発行する。
+この CA が保証する証明書を発行する。
 
 ```bash
 npm exec mkcert create-ca
@@ -26,7 +26,7 @@ npm exec mkcert create-ca
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ./ca.crt
 ```
 
-CAが信頼されたので、証明書を発行する
+CA が信頼されたので、証明書を発行する
 
 ```bash
 npm exec mkcert create-cert
@@ -39,8 +39,10 @@ npm exec mkcert create-cert
 
 `createServer`を修正して`key`と`cert`を渡す。
 
-- curlでアクセスしてみた
-    
-    curl -i -vvv https://localhost:3000/login
-    
-    (出力結果は省略)
+- curl でアクセスしてみた
+  curl -i -vvv https://localhost:3000/login
+  (出力結果は省略)
+
+# http2 に変更
+
+createServer を使っていた部分を createSecureServer に置き換える
