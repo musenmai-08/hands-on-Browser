@@ -50,3 +50,17 @@ createServer を使っていた部分を createSecureServer に置き換える
 # データストレージを試す
 
 "Cache-Contrl": "max-age=600"をレスポンスヘッダに追記
+
+# (番外編：　 ETag をつける)
+
+ETag を作成してレスポンスに付与。
+If-None-Match リクエストがあった際は ETag を確認し、ファイルが更新されていたら 200 OK を返す。更新されていなかった場合は 304 Not Modified を返す。
+ETag は content のハッシュとする。
+
+# ログインを成功させる
+
+id/passwor をチェックして、合致していたら成功レスポンス（302, Location: "/"）と共に、Set-Cookie でクッキーにセッション ID を入れる。
+
+### パース
+
+data は「id=yuki%40example.com&current-password=yUki0525%21」のようになっている。これをパースする。

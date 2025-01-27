@@ -4,6 +4,7 @@ import { resolve } from "path";
 import { createSecureServer } from "http2";
 import { on } from "events";
 import mime from "mime-types";
+import { createHash } from "crypto";
 
 const port = 3000;
 const reqs = on(
@@ -59,13 +60,27 @@ async function postLogin(req, res) {
 	});
 }
 
+function generateETag(content) {
+	const hash = createHash("md5").update(content).digest("hex");
+	return `"${hash}"`;
+}
+
 async function staticFile(url, req, res) {
 	try {
 		const content = await readFile(resolve("./public", url.pathname.slice(1)));
-		res.writeHead(200, {
-			"Content-Type": mime.lookup(url.pathname),
-			"Cache-Control": "max-age=600",
-		});
+		const etag = generateETag(content);
+
+		if (req.headers["if-none-match"] === etag) {
+			res.writeHead(304, {
+				"Cache-Control": "max-age=600",
+			});
+		} else {
+			res.writeHead(200, {
+				"Content-Type": mime.lookup(url.pathname),
+				"Cache-Control": "max-age=600",
+				ETag: etag,
+			});
+		}
 		res.end(content);
 	} catch (e) {
 		console.error(e);
@@ -76,7 +91,7 @@ async function staticFile(url, req, res) {
 
 for await (const [req, res] of reqs) {
 	const url = new URL(req.url, `https://${req.headers.host}`);
-	console.log(url);
+	// console.log(url);
 	try {
 		if (url.pathname === "/" && req.method === "GET") {
 			await getIndex(req, res);
