@@ -46,3 +46,7 @@ npm exec mkcert create-cert
 # http2 に変更
 
 createServer を使っていた部分を createSecureServer に置き換える
+
+# データストレージを試す
+
+"Cache-Contrl": "max-age=600"をレスポンスヘッダに追記
