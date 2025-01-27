@@ -15,11 +15,14 @@ const reqs = on(
 	"request"
 );
 
+const SESSION_ID = "123-456";
+
 function isLogin(req) {
-	// TODO: check request cookie
-	console.log(req.headers);
-	// ここで cookie をチェックして sessionid が有効なら true にしてください。
-	return false;
+	if (req.headers["cookie"] === SESSION_ID) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 async function getIndex(req, res) {
@@ -48,13 +51,22 @@ async function postLogin(req, res) {
 			data += d;
 		});
 		req.on("end", () => {
-			console.log(data);
-			// TODO: ここのデータのパースをしてください。
-			// ここで、リクエストの内容を取り出してIDとpasswordをチェックしてください。
-			// IDは yuki@example.com パスワードは yUki0525! ということにします。
-			res.writeHead(401);
-			// TODO: check login request and set cookie
-			res.end("Unauthorized");
+			const parsedData = decodeURIComponent(data);
+			const parsedDataArray = parsedData.split("&");
+
+			if (
+				parsedDataArray[0].split("=")[1] === "yuki@example.com" &&
+				parsedDataArray[1].split("=")[1] === "yUki0525!"
+			) {
+				res.writeHead(302, {
+					Location: "/",
+					"Set-Cookie": SESSION_ID,
+				});
+				res.end("somethin error");
+			} else {
+				res.writeHead(401);
+				res.end("Unauthorized");
+			}
 			resolve();
 		});
 	});
@@ -91,7 +103,6 @@ async function staticFile(url, req, res) {
 
 for await (const [req, res] of reqs) {
 	const url = new URL(req.url, `https://${req.headers.host}`);
-	// console.log(url);
 	try {
 		if (url.pathname === "/" && req.method === "GET") {
 			await getIndex(req, res);

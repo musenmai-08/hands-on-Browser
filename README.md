@@ -61,6 +61,6 @@ ETag は content のハッシュとする。
 
 id/passwor をチェックして、合致していたら成功レスポンス（302, Location: "/"）と共に、Set-Cookie でクッキーにセッション ID を入れる。
 
-### パース
+# JavaScript が動くようにする
 
-data は「id=yuki%40example.com&current-password=yUki0525%21」のようになっている。これをパースする。
+### なんで動かないのか
