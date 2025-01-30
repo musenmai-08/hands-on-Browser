@@ -1,41 +1,51 @@
-const form = document.querySelector('form');
-const passwordInput = document.querySelector('input#current-password');
-const signinButton = document.querySelector('button#login');
-const togglePasswordButton = document.querySelector('button#toggle-password');
+const form = document.querySelector("form");
+const passwordInput = document.querySelector("input#current-password");
+const signinButton = document.querySelector("button#login");
+const togglePasswordButton = document.querySelector("button#toggle-password");
 
-togglePasswordButton.addEventListener('click', togglePassword);
+togglePasswordButton.addEventListener("click", togglePassword);
 
 function togglePassword() {
-  if (passwordInput.type === 'password') {
-    passwordInput.type = 'text';
-    togglePasswordButton.textContent = 'Hide password';
-    togglePasswordButton.setAttribute('aria-label',
-      'Hide password.');
-  } else {
-    passwordInput.type = 'password';
-    togglePasswordButton.textContent = 'Show password';
-    togglePasswordButton.setAttribute('aria-label',
-      'Show password as plain text. ' +
-      'Warning: this will display your password on the screen.');
-  }
+	if (passwordInput.type === "password") {
+		passwordInput.type = "text";
+		togglePasswordButton.textContent = "Hide password";
+		togglePasswordButton.setAttribute("aria-label", "Hide password.");
+	} else {
+		passwordInput.type = "password";
+		togglePasswordButton.textContent = "Show password";
+		togglePasswordButton.setAttribute(
+			"aria-label",
+			"Show password as plain text. " +
+				"Warning: this will display your password on the screen."
+		);
+	}
 }
 
 // TODO: もしもできたらこのパスワードの動的チェックに挑戦してみてください。
-passwordInput.addEventListener('input', validatePassword);
+passwordInput.addEventListener("input", validatePassword);
 
 function validatePassword() {
+	const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+	const alertMessage = document.getElementById("alert-message");
+	if (regex.test(passwordInput.value)) {
+		alertMessage.hidden = true;
+		signinButton.disabled = false;
+	} else {
+		alertMessage.hidden = false;
+		signinButton.disabled = true;
+	}
 }
 
-form.addEventListener('submit', handleFormSubmit);                       
+form.addEventListener("submit", handleFormSubmit);
 
 function handleFormSubmit(event) {
-  console.log('submit');
-  if (form.checkValidity() === false) {
-    console.log('not valid');
-    event.preventDefault();
-  } else {
-    // On a production site do form submission.
-    signinButton.disabled = 'true';
-    event.preventDefault();
-  }
+	console.log("submit");
+	if (form.checkValidity() === false) {
+		console.log("not valid");
+		event.preventDefault();
+	} else {
+		// On a production site do form submission.
+		signinButton.disabled = "true";
+		// event.preventDefault();
+	}
 }

@@ -62,7 +62,7 @@ async function postLogin(req, res) {
 					Location: "/",
 					"Set-Cookie": SESSION_ID,
 				});
-				res.end("somethin error");
+				res.end("something error");
 			} else {
 				res.writeHead(401);
 				res.end("Unauthorized");
